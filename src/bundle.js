@@ -86,53 +86,6 @@
 /************************************************************************/
 /******/ ({
 
-/***/ "./src/earth.js":
-/*!**********************!*\
-  !*** ./src/earth.js ***!
-  \**********************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-class Earth {
-  constructor(canvas, ctx) {
-    this.canvas = canvas;
-    this.ctx = ctx;
-  }
-
-  render() {
-    this.ctx.beginPath();
-
-    var grd = this.ctx.createRadialGradient(
-      this.canvas.width / 2,
-      this.canvas.height / 2,
-      35,
-      90,
-      60,
-      Math.PI * 2
-    );
-    grd.addColorStop(0, "blue");
-    grd.addColorStop(1, "green");
-    this.ctx.arc(
-      this.canvas.width / 2,
-      this.canvas.height / 2,
-      35,
-      90,
-      60,
-      Math.PI * 2
-    );
-    this.ctx.fillStyle = grd;
-    this.ctx.fill();
-    this.ctx.closePath();
-  }
-}
-
-/* harmony default export */ __webpack_exports__["default"] = (Earth);
-
-
-/***/ }),
-
 /***/ "./src/entry.js":
 /*!**********************!*\
   !*** ./src/entry.js ***!
@@ -188,6 +141,53 @@ class Explosion {
 
 /***/ }),
 
+/***/ "./src/flare.js":
+/*!**********************!*\
+  !*** ./src/flare.js ***!
+  \**********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+class Flare {
+  constructor(x, y, hue, ctx) {
+    debugger;
+    this.x = x;
+    this.y = y;
+    this.hue = hue;
+    this.ctx = ctx;
+    this.radius = Math.random() * 5 + 10;
+  }
+
+  render() {
+    var newRadius = this.radius;
+    this.ctx.beginPath();
+    this.ctx.arc(
+      this.x + Math.random() * 2 - 1,
+      this.y + Math.random() * 2 - 1,
+      newRadius < 0 ? 0 : newRadius,
+      0,
+      Math.PI * 2,
+      false
+    );
+    this.ctx.fillStyle =
+      "hsla(" +
+      this.hue +
+      ", 100%, " +
+      (Math.random() * 50 + 50) +
+      "%, " +
+      (Math.random() * 50 + 50) / 100 +
+      ")";
+    this.ctx.fill();
+  }
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Flare);
+
+
+/***/ }),
+
 /***/ "./src/game.js":
 /*!*********************!*\
   !*** ./src/game.js ***!
@@ -198,10 +198,9 @@ class Explosion {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _meteor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./meteor */ "./src/meteor.js");
-/* harmony import */ var _explosion__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./explosion */ "./src/explosion.js");
-/* harmony import */ var _shield__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./shield */ "./src/shield.js");
-/* harmony import */ var _earth__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./earth */ "./src/earth.js");
-
+/* harmony import */ var _shield__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./shield */ "./src/shield.js");
+/* harmony import */ var _explosion__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./explosion */ "./src/explosion.js");
+/* harmony import */ var _flare__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./flare */ "./src/flare.js");
 
 
 
@@ -216,6 +215,8 @@ class Game {
     this.numMeteors = 2;
     this.speed = 1;
     this.shieldArray = [];
+    this.flareArray = [];
+
     this.tempStartPoint = { x: 0, y: 0 };
     this.tempEndPoint = { x: 0, y: 0 };
     this.tempLineLength = 0;
@@ -236,7 +237,10 @@ class Game {
     this.score = 0;
     this.gameOver = false;
 
-    this.earth = new _earth__WEBPACK_IMPORTED_MODULE_3__["default"](this.canvas, this.ctx);
+    // this.earth = new Earth(this.canvas, this.ctx);
+    this.earth = new Image();
+    this.earth.src =
+      "https://ui-ex.com/transparent600_/planet-transparent-5.png";
 
     this.createMeteors = this.createMeteors.bind(this);
     this.loop = this.loop.bind(this);
@@ -415,6 +419,8 @@ class Game {
             meteor.length,
             20
           );
+
+          this.createFlares(intersection.x, intersection.y, 120);
           this.meteorArray.splice(k, 1);
           break;
         }
@@ -427,7 +433,7 @@ class Game {
       var newLength = Math.random() * length;
       var newX = x - Math.cos(angle) * newLength;
       var newY = y - Math.sin(angle) * newLength;
-      this.explosionArray.push(new _explosion__WEBPACK_IMPORTED_MODULE_1__["default"](newX, newY, hue, light, this.ctx));
+      this.explosionArray.push(new _explosion__WEBPACK_IMPORTED_MODULE_2__["default"](newX, newY, hue, light, this.ctx));
       count--;
     }
   }
@@ -438,7 +444,7 @@ class Game {
       var newAngle = Math.random() * Math.PI * 2;
       var newX = x + Math.cos(newAngle) * newRadius;
       var newY = y + Math.sin(newAngle) * newRadius;
-      this.explosionArray.push(new _explosion__WEBPACK_IMPORTED_MODULE_1__["default"](newX, newY, hue, light, this.ctx));
+      this.explosionArray.push(new _explosion__WEBPACK_IMPORTED_MODULE_2__["default"](newX, newY, hue, light, this.ctx));
       count--;
     }
   }
@@ -468,8 +474,54 @@ class Game {
     }
   }
 
+  createFlares(x, y, hue) {
+    this.flareArray.push(new _flare__WEBPACK_IMPORTED_MODULE_3__["default"](x, y, hue, this.ctx));
+    this.flareArray.push(
+      new _flare__WEBPACK_IMPORTED_MODULE_3__["default"](
+        x + (Math.random() * 10 - 5),
+        y + (Math.random() * 10 - 5),
+        hue,
+        this.ctx
+      )
+    );
+    this.flareArray.push(
+      new _flare__WEBPACK_IMPORTED_MODULE_3__["default"](
+        x + (Math.random() * 10 - 5),
+        y + (Math.random() * 10 - 5),
+        hue,
+        this.ctx
+      )
+    );
+  }
+
+  renderFlares() {
+    for (var i = 0; i < this.flareArray.length; i++) {
+      this.flareArray[i].render();
+    }
+  }
+
+  updateFlares() {
+    for (var i = 0; i < this.flareArray.length; i++) {
+      var flare = this.flareArray[i];
+      flare.radius -= 0.7;
+      if (flare.radius <= 0) {
+        this.flareArray.splice(i, 1);
+      }
+    }
+  }
+
+  // renderEarth() {
+  //   this.earth.render();
+  // }
+
   renderEarth() {
-    this.earth.render();
+    this.ctx.drawImage(
+      this.earth,
+      this.canvas.width / 2 - 38,
+      this.canvas.height / 2 - 38,
+      75,
+      75
+    );
   }
 
   updateEarth() {
@@ -479,7 +531,7 @@ class Game {
       var dx = this.canvas.width / 2 - meteorPoint.x;
       var dy = this.canvas.height / 2 - meteorPoint.y;
       var dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist <= 35) {
+      if (dist <= 29) {
         this.health -= 1;
 
         this.createCluseterExplosion(
@@ -487,7 +539,7 @@ class Game {
           meteorPoint.y,
           Math.random() * 250,
           Math.random() * 25 + 50,
-          20
+          40
         );
         this.createLineExplosion(
           meteorPoint.x,
@@ -498,6 +550,9 @@ class Game {
           meteor.length,
           20
         );
+
+        this.createFlares(meteorPoint.x, meteorPoint.y, 0);
+
         this.meteorArray.splice(i, 1);
       }
     }
@@ -523,7 +578,7 @@ class Game {
     this.clear();
     this.renderScore();
     this.renderLives();
-    this.checkGameOver();
+    // this.checkGameOver();
     this.updateEarth();
     this.renderEarth();
     this.updateMeteors();
@@ -533,6 +588,8 @@ class Game {
     this.renderGuide();
     this.updateExplosions();
     this.renderExplosions();
+    this.updateFlares();
+    this.renderFlares();
   }
 
   checkGameOver() {
@@ -556,7 +613,7 @@ class Game {
       this.tempStartPoint.y != this.tempEndPoint.y
     ) {
       this.shieldArray.push(
-        new _shield__WEBPACK_IMPORTED_MODULE_2__["default"](this.tempStartPoint, this.tempEndPoint, this.ctx)
+        new _shield__WEBPACK_IMPORTED_MODULE_1__["default"](this.tempStartPoint, this.tempEndPoint, this.ctx)
       );
       this.power.current -= this.tempLineLength;
     }
