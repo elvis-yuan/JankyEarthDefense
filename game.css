@@ -12,3 +12,21 @@ canvas {
   background-color: black;
   cursor: crosshair;
 }
+
+#game-instructions {
+  height: 200px;
+  width: 200px;
+  background-color: grey;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#game-instructions > span {
+  cursor: pointer;
+}
+
+#game-instructions.hidden {
+  display: none;
+}
