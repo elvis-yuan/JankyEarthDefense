@@ -1,6 +1,5 @@
 class Flare {
   constructor(x, y, hue, ctx) {
-    debugger;
     this.x = x;
     this.y = y;
     this.hue = hue;

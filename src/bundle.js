@@ -103,7 +103,8 @@ document.addEventListener("DOMContentLoaded", () => {
   var ctx = canvas.getContext("2d");
 
   var instructions = document.getElementById("game-instructions");
-  instructions.addEventListener("click", handleClick);
+  var play = document.getElementById("play-button");
+  play.addEventListener("click", handleClick);
 
   function handleClick(e) {
     const newGame = new _game__WEBPACK_IMPORTED_MODULE_0__["default"](canvas, ctx);
@@ -159,7 +160,6 @@ class Explosion {
 __webpack_require__.r(__webpack_exports__);
 class Flare {
   constructor(x, y, hue, ctx) {
-    debugger;
     this.x = x;
     this.y = y;
     this.hue = hue;

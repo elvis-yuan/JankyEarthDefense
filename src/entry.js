@@ -5,7 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
   var ctx = canvas.getContext("2d");
 
   var instructions = document.getElementById("game-instructions");
-  instructions.addEventListener("click", handleClick);
+  var play = document.getElementById("play-button");
+  play.addEventListener("click", handleClick);
 
   function handleClick(e) {
     const newGame = new Game(canvas, ctx);

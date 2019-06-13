@@ -15,10 +15,12 @@ canvas {
 
 #game-instructions {
   height: 200px;
-  width: 200px;
+  width: 400px;
+  padding: 20px;
   background-color: grey;
   position: absolute;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
