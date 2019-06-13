@@ -1,8 +1,7 @@
 import Meteor from "./meteor";
-import explosion from "./explosion";
 import Shield from "./shield";
-import Earth from "./earth";
 import Explosion from "./explosion";
+import Flare from "./flare";
 
 class Game {
   constructor(canvas, ctx) {
@@ -13,6 +12,8 @@ class Game {
     this.numMeteors = 2;
     this.speed = 1;
     this.shieldArray = [];
+    this.flareArray = [];
+
     this.tempStartPoint = { x: 0, y: 0 };
     this.tempEndPoint = { x: 0, y: 0 };
     this.tempLineLength = 0;
@@ -33,7 +34,10 @@ class Game {
     this.score = 0;
     this.gameOver = false;
 
-    this.earth = new Earth(this.canvas, this.ctx);
+    // this.earth = new Earth(this.canvas, this.ctx);
+    this.earth = new Image();
+    this.earth.src =
+      "https://ui-ex.com/transparent600_/planet-transparent-5.png";
 
     this.createMeteors = this.createMeteors.bind(this);
     this.loop = this.loop.bind(this);
@@ -212,6 +216,8 @@ class Game {
             meteor.length,
             20
           );
+
+          this.createFlares(intersection.x, intersection.y, 120);
           this.meteorArray.splice(k, 1);
           break;
         }
@@ -265,8 +271,54 @@ class Game {
     }
   }
 
+  createFlares(x, y, hue) {
+    this.flareArray.push(new Flare(x, y, hue, this.ctx));
+    this.flareArray.push(
+      new Flare(
+        x + (Math.random() * 10 - 5),
+        y + (Math.random() * 10 - 5),
+        hue,
+        this.ctx
+      )
+    );
+    this.flareArray.push(
+      new Flare(
+        x + (Math.random() * 10 - 5),
+        y + (Math.random() * 10 - 5),
+        hue,
+        this.ctx
+      )
+    );
+  }
+
+  renderFlares() {
+    for (var i = 0; i < this.flareArray.length; i++) {
+      this.flareArray[i].render();
+    }
+  }
+
+  updateFlares() {
+    for (var i = 0; i < this.flareArray.length; i++) {
+      var flare = this.flareArray[i];
+      flare.radius -= 0.7;
+      if (flare.radius <= 0) {
+        this.flareArray.splice(i, 1);
+      }
+    }
+  }
+
+  // renderEarth() {
+  //   this.earth.render();
+  // }
+
   renderEarth() {
-    this.earth.render();
+    this.ctx.drawImage(
+      this.earth,
+      this.canvas.width / 2 - 38,
+      this.canvas.height / 2 - 38,
+      75,
+      75
+    );
   }
 
   updateEarth() {
@@ -276,7 +328,7 @@ class Game {
       var dx = this.canvas.width / 2 - meteorPoint.x;
       var dy = this.canvas.height / 2 - meteorPoint.y;
       var dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist <= 35) {
+      if (dist <= 29) {
         this.health -= 1;
 
         this.createCluseterExplosion(
@@ -284,7 +336,7 @@ class Game {
           meteorPoint.y,
           Math.random() * 250,
           Math.random() * 25 + 50,
-          20
+          40
         );
         this.createLineExplosion(
           meteorPoint.x,
@@ -295,6 +347,9 @@ class Game {
           meteor.length,
           20
         );
+
+        this.createFlares(meteorPoint.x, meteorPoint.y, 0);
+
         this.meteorArray.splice(i, 1);
       }
     }
@@ -320,7 +375,7 @@ class Game {
     this.clear();
     this.renderScore();
     this.renderLives();
-    this.checkGameOver();
+    // this.checkGameOver();
     this.updateEarth();
     this.renderEarth();
     this.updateMeteors();
@@ -330,6 +385,8 @@ class Game {
     this.renderGuide();
     this.updateExplosions();
     this.renderExplosions();
+    this.updateFlares();
+    this.renderFlares();
   }
 
   checkGameOver() {
