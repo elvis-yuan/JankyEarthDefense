@@ -101,8 +101,15 @@ __webpack_require__.r(__webpack_exports__);
 document.addEventListener("DOMContentLoaded", () => {
   var canvas = document.getElementById("myCanvas");
   var ctx = canvas.getContext("2d");
-  const newGame = new _game__WEBPACK_IMPORTED_MODULE_0__["default"](canvas, ctx);
-  newGame.startGame();
+
+  var instructions = document.getElementById("game-instructions");
+  instructions.addEventListener("click", handleClick);
+
+  function handleClick(e) {
+    const newGame = new _game__WEBPACK_IMPORTED_MODULE_0__["default"](canvas, ctx);
+    newGame.startGame();
+    instructions.classList.toggle("hidden");
+  }
 });
 
 
