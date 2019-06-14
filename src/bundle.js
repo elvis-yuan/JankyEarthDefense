@@ -219,8 +219,8 @@ class Game {
     this.ctx = ctx;
 
     this.meteorArray = [];
-    this.numMeteors = 2;
-    this.speed = 1;
+    this.numMeteors = 1;
+    this.speed = 0.5;
     this.shieldArray = [];
     this.flareArray = [];
 
@@ -242,7 +242,9 @@ class Game {
 
     this.health = 3;
     this.score = 0;
+    this.counter = 5000;
     this.gameOver = false;
+    this.gamePause = false;
 
     // this.earth = new Earth(this.canvas, this.ctx);
     this.earth = new Image();
@@ -259,6 +261,16 @@ class Game {
     canvas.addEventListener("mousedown", this.handleMousedown, false);
     canvas.addEventListener("mouseup", this.handleMouseup, false);
     canvas.addEventListener("mousemove", this.handleMousemove, false);
+    document.addEventListener("keydown", e => {
+      switch (e.code) {
+        case "Space":
+          e.preventDefault();
+          this.handleSpace();
+          break;
+        default:
+          break;
+      }
+    });
   }
 
   //Line intersection math source: http://www.kevlindev.com/gui/math/intersection/Intersection.js
@@ -291,10 +303,10 @@ class Game {
   }
 
   increaseDifficulty() {
-    if (this.speed < 5) {
-      this.speed += 0.1;
+    if (this.speed < 3) {
+      this.speed += 0.05;
     }
-    if (this.numMeteors < 5) {
+    if (this.numMeteors < 7) {
       this.numMeteors += 0.1;
     }
     if (this.power.rate < 0.75) {
@@ -314,15 +326,6 @@ class Game {
 
   updateMeteors() {
     for (var i = 0; i < this.meteorArray.length; i++) {
-      // if (
-      //   this.meteorArray[i].endPoint.x < -100 ||
-      //   this.meteorArray[i].endPoint.x > this.canvas.width + 100 ||
-      //   this.meteorArray[i].endPoint.y < -100 ||
-      //   this.meteorArray[i].endPoint.y > this.canvas.height + 100
-      // ) {
-      //   this.meteorArray.splice(i, 1);
-      //   this.createMeteors();
-      // }
       this.meteorArray[i].update();
       this.meteorArray[i].render();
     }
@@ -399,6 +402,10 @@ class Game {
         if (intersection) {
           this.score += 100;
           this.score += 100 - Math.floor(shield.length);
+          if (this.score / this.counter > 1) {
+            this.health += 1;
+            this.counter += 5000;
+          }
           this.shieldArray.splice(i, 1);
           this.createCluseterExplosion(
             intersection.x,
@@ -517,10 +524,6 @@ class Game {
     }
   }
 
-  // renderEarth() {
-  //   this.earth.render();
-  // }
-
   renderEarth() {
     this.ctx.drawImage(
       this.earth,
@@ -575,19 +578,44 @@ class Game {
 
   renderLives() {
     var lives = this.health.toString();
-    var fullLives = "Lives: " + lives;
-    this.ctx.font = "20px Georgia";
+    var fullLives = lives;
+    this.ctx.font = "25px Georgia";
     this.ctx.fillStyle = "white";
-    this.ctx.fillText(fullLives, 20, 50);
+    this.ctx.shadowColor = "rgba(0,0,0,1)";
+    this.ctx.shadowBlur = 4;
+    this.ctx.fillText(
+      fullLives,
+      this.canvas.width / 2 - 7,
+      this.canvas.height / 2 + 5
+    );
+  }
+
+  renderPower() {
+    this.ctx.fillStyle = "grey";
+    this.ctx.fillRect(
+      this.canvas.width - 50,
+      this.canvas.height - 250,
+      20,
+      -100
+    );
+
+    this.ctx.fillStyle = "white";
+    this.ctx.fillRect(
+      this.canvas.width - 50,
+      this.canvas.height - 250,
+      20,
+      -this.power.current
+    );
   }
 
   loop() {
     this.clear();
     this.renderScore();
-    this.renderLives();
-    // this.checkGameOver();
+    this.renderPower();
+    this.checkGameOver();
     this.updateEarth();
     this.renderEarth();
+    this.renderLives();
     this.updateMeteors();
     this.updateShields();
     this.renderShields();
@@ -605,6 +633,20 @@ class Game {
       clearInterval(this.gameLoop);
       clearInterval(this.meteorInterval);
       clearInterval(this.difficultyInterval);
+    }
+  }
+
+  handleSpace() {
+    debugger;
+    this.gamePause = this.gamePause ? false : true;
+    if (this.gamePause) {
+      clearInterval(this.gameLoop);
+      clearInterval(this.meteorInterval);
+      clearInterval(this.difficultyInterval);
+    } else {
+      this.difficultyInterval = setInterval(this.increaseDifficulty, 3000);
+      this.meteorInterval = setInterval(this.createMeteors, 700);
+      this.gameLoop = setInterval(this.loop, 16);
     }
   }
 
@@ -703,7 +745,7 @@ class Meteor {
     this.ctx.beginPath();
     this.ctx.moveTo(this.startPoint.x, this.startPoint.y);
     this.ctx.lineTo(this.endPoint.x, this.endPoint.y);
-    this.ctx.lineWidth = 2;
+    this.ctx.lineWidth = 1.5;
     this.ctx.strokeStyle = "red";
     this.ctx.stroke();
   }
