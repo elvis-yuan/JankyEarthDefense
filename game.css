@@ -9,7 +9,7 @@ body {
   align-items: center;
 }
 canvas {
-  background-color: black;
+  background: radial-gradient(rgba(0, 0, 0, 0.9) 5%, rgba(0, 0, 0, 1) 35%);
   cursor: crosshair;
 }
 
