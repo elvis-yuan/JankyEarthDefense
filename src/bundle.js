@@ -637,7 +637,7 @@ class Game {
   }
 
   handleSpace() {
-    debugger;
+    // debugger;
     this.gamePause = this.gamePause ? false : true;
     if (this.gamePause) {
       clearInterval(this.gameLoop);
