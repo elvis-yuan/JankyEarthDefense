@@ -2,6 +2,7 @@ import Meteor from "./meteor";
 import Shield from "./shield";
 import Explosion from "./explosion";
 import Flare from "./flare";
+import Star from "./star";
 
 class Game {
   constructor(canvas, ctx) {
@@ -10,9 +11,10 @@ class Game {
 
     this.meteorArray = [];
     this.numMeteors = 1;
-    this.speed = 0.5;
+    this.speed = 1;
     this.shieldArray = [];
     this.flareArray = [];
+    this.starsArray = [];
 
     this.tempStartPoint = { x: 0, y: 0 };
     this.tempEndPoint = { x: 0, y: 0 };
@@ -35,12 +37,15 @@ class Game {
     this.counter = 5000;
     this.gameOver = false;
     this.gamePause = false;
+    this.fade = 0;
 
     // this.earth = new Earth(this.canvas, this.ctx);
     this.earth = new Image();
     this.earth.src =
       "https://ui-ex.com/transparent600_/planet-transparent-5.png";
 
+    this.handleGameOver = this.handleGameOver.bind(this);
+    this.createStars = this.createStars.bind(this);
     this.createMeteors = this.createMeteors.bind(this);
     this.loop = this.loop.bind(this);
     this.handleMouseup = this.handleMouseup.bind(this);
@@ -87,13 +92,16 @@ class Game {
   }
 
   startGame() {
+    this.fade = 0;
+    this.createStars(20);
     this.difficultyInterval = setInterval(this.increaseDifficulty, 3000);
     this.meteorInterval = setInterval(this.createMeteors, 700);
     this.gameLoop = setInterval(this.loop, 16);
+    this.starLoop = setInterval(() => this.createStars(5), 5000);
   }
 
   increaseDifficulty() {
-    if (this.speed < 3) {
+    if (this.speed < 4) {
       this.speed += 0.05;
     }
     if (this.numMeteors < 7) {
@@ -106,6 +114,37 @@ class Game {
 
   clear() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  createStars(count) {
+    while (count >= 0) {
+      this.starsArray.push(
+        new Star(
+          Math.random() * this.canvas.width,
+          Math.random() * this.canvas.height,
+          Math.random() * 2,
+          0.2,
+          this.ctx
+        )
+      );
+      count--;
+    }
+  }
+
+  renderStars() {
+    for (var i = 0; i < this.starsArray.length; i++) {
+      this.starsArray[i].render();
+    }
+  }
+
+  updateStars() {
+    for (var i = 0; i < this.starsArray.length; i++) {
+      this.starsArray[i].update();
+      if (this.starsArray[i].y > this.canvas.height) {
+        this.starsArray.splice(i, 1);
+        break;
+      }
+    }
   }
 
   createMeteors() {
@@ -332,7 +371,9 @@ class Game {
       var dy = this.canvas.height / 2 - meteorPoint.y;
       var dist = Math.sqrt(dx * dx + dy * dy);
       if (dist <= 29) {
-        this.health -= 1;
+        if (this.health > 0) {
+          this.health -= 1;
+        }
 
         this.createCluseterExplosion(
           meteorPoint.x,
@@ -400,9 +441,10 @@ class Game {
 
   loop() {
     this.clear();
+    this.updateStars();
+    this.renderStars();
     this.renderScore();
     this.renderPower();
-    this.checkGameOver();
     this.updateEarth();
     this.renderEarth();
     this.renderLives();
@@ -415,15 +457,23 @@ class Game {
     this.renderExplosions();
     this.updateFlares();
     this.renderFlares();
+    this.checkGameOver();
   }
 
   checkGameOver() {
     if (this.health <= 0) {
       this.gameOver = true;
-      clearInterval(this.gameLoop);
-      clearInterval(this.meteorInterval);
-      clearInterval(this.difficultyInterval);
+      this.fade += 0.01;
+      this.ctx.fillStyle = "rgba(0,0,0," + this.fade + ")";
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      setTimeout(() => this.handleGameOver(), 5000);
     }
+  }
+
+  handleGameOver() {
+    clearInterval(this.gameLoop);
+    clearInterval(this.meteorInterval);
+    clearInterval(this.difficultyInterval);
   }
 
   handleSpace() {
@@ -447,14 +497,16 @@ class Game {
 
   handleMouseup() {
     this.mousedown = false;
-    if (
-      this.tempStartPoint.x != this.tempEndPoint.x ||
-      this.tempStartPoint.y != this.tempEndPoint.y
-    ) {
-      this.shieldArray.push(
-        new Shield(this.tempStartPoint, this.tempEndPoint, this.ctx)
-      );
-      this.power.current -= this.tempLineLength;
+    if (this.shieldArray.length < 50) {
+      if (
+        this.tempStartPoint.x != this.tempEndPoint.x ||
+        this.tempStartPoint.y != this.tempEndPoint.y
+      ) {
+        this.shieldArray.push(
+          new Shield(this.tempStartPoint, this.tempEndPoint, this.ctx)
+        );
+        this.power.current -= this.tempLineLength;
+      }
     }
   }
 

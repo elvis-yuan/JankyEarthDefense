@@ -208,6 +208,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _shield__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./shield */ "./src/shield.js");
 /* harmony import */ var _explosion__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./explosion */ "./src/explosion.js");
 /* harmony import */ var _flare__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./flare */ "./src/flare.js");
+/* harmony import */ var _star__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./star */ "./src/star.js");
+
 
 
 
@@ -220,9 +222,10 @@ class Game {
 
     this.meteorArray = [];
     this.numMeteors = 1;
-    this.speed = 0.5;
+    this.speed = 1;
     this.shieldArray = [];
     this.flareArray = [];
+    this.starsArray = [];
 
     this.tempStartPoint = { x: 0, y: 0 };
     this.tempEndPoint = { x: 0, y: 0 };
@@ -245,12 +248,15 @@ class Game {
     this.counter = 5000;
     this.gameOver = false;
     this.gamePause = false;
+    this.fade = 0;
 
     // this.earth = new Earth(this.canvas, this.ctx);
     this.earth = new Image();
     this.earth.src =
       "https://ui-ex.com/transparent600_/planet-transparent-5.png";
 
+    this.handleGameOver = this.handleGameOver.bind(this);
+    this.createStars = this.createStars.bind(this);
     this.createMeteors = this.createMeteors.bind(this);
     this.loop = this.loop.bind(this);
     this.handleMouseup = this.handleMouseup.bind(this);
@@ -297,13 +303,16 @@ class Game {
   }
 
   startGame() {
+    this.fade = 0;
+    this.createStars(20);
     this.difficultyInterval = setInterval(this.increaseDifficulty, 3000);
     this.meteorInterval = setInterval(this.createMeteors, 700);
     this.gameLoop = setInterval(this.loop, 16);
+    this.starLoop = setInterval(() => this.createStars(5), 5000);
   }
 
   increaseDifficulty() {
-    if (this.speed < 3) {
+    if (this.speed < 4) {
       this.speed += 0.05;
     }
     if (this.numMeteors < 7) {
@@ -316,6 +325,37 @@ class Game {
 
   clear() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  createStars(count) {
+    while (count >= 0) {
+      this.starsArray.push(
+        new _star__WEBPACK_IMPORTED_MODULE_4__["default"](
+          Math.random() * this.canvas.width,
+          Math.random() * this.canvas.height,
+          Math.random() * 2,
+          0.2,
+          this.ctx
+        )
+      );
+      count--;
+    }
+  }
+
+  renderStars() {
+    for (var i = 0; i < this.starsArray.length; i++) {
+      this.starsArray[i].render();
+    }
+  }
+
+  updateStars() {
+    for (var i = 0; i < this.starsArray.length; i++) {
+      this.starsArray[i].update();
+      if (this.starsArray[i].y > this.canvas.height) {
+        this.starsArray.splice(i, 1);
+        break;
+      }
+    }
   }
 
   createMeteors() {
@@ -542,7 +582,9 @@ class Game {
       var dy = this.canvas.height / 2 - meteorPoint.y;
       var dist = Math.sqrt(dx * dx + dy * dy);
       if (dist <= 29) {
-        this.health -= 1;
+        if (this.health > 0) {
+          this.health -= 1;
+        }
 
         this.createCluseterExplosion(
           meteorPoint.x,
@@ -610,9 +652,10 @@ class Game {
 
   loop() {
     this.clear();
+    this.updateStars();
+    this.renderStars();
     this.renderScore();
     this.renderPower();
-    this.checkGameOver();
     this.updateEarth();
     this.renderEarth();
     this.renderLives();
@@ -625,15 +668,23 @@ class Game {
     this.renderExplosions();
     this.updateFlares();
     this.renderFlares();
+    this.checkGameOver();
   }
 
   checkGameOver() {
     if (this.health <= 0) {
       this.gameOver = true;
-      clearInterval(this.gameLoop);
-      clearInterval(this.meteorInterval);
-      clearInterval(this.difficultyInterval);
+      this.fade += 0.01;
+      this.ctx.fillStyle = "rgba(0,0,0," + this.fade + ")";
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      setTimeout(() => this.handleGameOver(), 5000);
     }
+  }
+
+  handleGameOver() {
+    clearInterval(this.gameLoop);
+    clearInterval(this.meteorInterval);
+    clearInterval(this.difficultyInterval);
   }
 
   handleSpace() {
@@ -657,14 +708,16 @@ class Game {
 
   handleMouseup() {
     this.mousedown = false;
-    if (
-      this.tempStartPoint.x != this.tempEndPoint.x ||
-      this.tempStartPoint.y != this.tempEndPoint.y
-    ) {
-      this.shieldArray.push(
-        new _shield__WEBPACK_IMPORTED_MODULE_1__["default"](this.tempStartPoint, this.tempEndPoint, this.ctx)
-      );
-      this.power.current -= this.tempLineLength;
+    if (this.shieldArray.length < 50) {
+      if (
+        this.tempStartPoint.x != this.tempEndPoint.x ||
+        this.tempStartPoint.y != this.tempEndPoint.y
+      ) {
+        this.shieldArray.push(
+          new _shield__WEBPACK_IMPORTED_MODULE_1__["default"](this.tempStartPoint, this.tempEndPoint, this.ctx)
+        );
+        this.power.current -= this.tempLineLength;
+      }
     }
   }
 
@@ -787,6 +840,50 @@ class Shield {
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (Shield);
+
+
+/***/ }),
+
+/***/ "./src/star.js":
+/*!*********************!*\
+  !*** ./src/star.js ***!
+  \*********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+class Star {
+  constructor(x, y, radius, speed, ctx) {
+    this.ctx = ctx;
+    this.x = x;
+    this.y = y;
+    this.speed = speed;
+    this.radius = radius;
+    this.saturation = 30 * 5;
+    this.lightness = 8 * 3;
+  }
+
+  render() {
+    this.ctx.beginPath();
+    this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+    this.ctx.shadowColor = "transparent";
+    this.ctx.fillStyle =
+      "hsla(60, " +
+      this.saturation +
+      "%, " +
+      this.lightness +
+      "%, " +
+      0.2 +
+      ")";
+    this.ctx.fill();
+  }
+
+  update() {
+    this.y += this.speed;
+  }
+}
+/* harmony default export */ __webpack_exports__["default"] = (Star);
 
 
 /***/ })
