@@ -245,7 +245,7 @@ class Game {
 
     this.health = 3;
     this.score = 0;
-    this.counter = 5000;
+    this.counter = 10000;
     this.gameOver = false;
     this.gamePause = false;
     this.fade = 0;
@@ -444,7 +444,7 @@ class Game {
           this.score += 100 - Math.floor(shield.length);
           if (this.score / this.counter > 1) {
             this.health += 1;
-            this.counter += 5000;
+            this.counter += 10000;
           }
           this.shieldArray.splice(i, 1);
           this.createCluseterExplosion(
