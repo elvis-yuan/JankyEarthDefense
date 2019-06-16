@@ -1,7 +1,9 @@
 body {
   margin: 0;
   height: 100vh;
+  background-color: black;
 }
+
 .game-container {
   height: 100%;
   display: flex;
@@ -9,19 +11,24 @@ body {
   align-items: center;
 }
 canvas {
-  background: radial-gradient(rgba(0, 0, 0, 0.9) 5%, rgba(0, 0, 0, 1) 35%);
+  background: radial-gradient(
+    rgba(255, 255, 255, 0.05) 5%,
+    rgba(0, 0, 0, 1) 50%
+  );
   cursor: crosshair;
+  border: 1px solid rgb(53, 53, 53);
 }
 
 #game-instructions {
-  height: 200px;
-  width: 400px;
+  height: 560px;
+  width: 920px;
   padding: 20px;
-  background-color: grey;
+  color: rgb(190, 190, 190);
+  background-color: rgba(20, 20, 20, 0.856);
   position: absolute;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 }
 
