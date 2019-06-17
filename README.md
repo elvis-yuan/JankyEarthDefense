@@ -15,6 +15,13 @@ Scores are calculated based on survival time, the number of lines created and le
 - Game will end when Earth is hit by 3 meteors
 - Lines will disapear when meteors collide with them
 
+## MVP
+- Canvas renders assets
+- Users can use mouse click and drag
+- Meteors spawn randomly and travel towards the center
+- Space bar pauses the game
+- Game over screen displays score and replay button
+
 ## Wireframe
 
 ![](https://github.com/elvis-yuan/JankyEarthDefense/blob/master/Wireframe.png)
