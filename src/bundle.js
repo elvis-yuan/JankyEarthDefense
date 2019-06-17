@@ -110,12 +110,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function handleClick(e) {
     const newGame = new _game__WEBPACK_IMPORTED_MODULE_0__["default"](canvas, ctx);
     newGame.startGame();
-    instructions.classList.toggle("hidden");
+    instructions.classList.add("hidden");
   }
   var retry = document.getElementById("retry");
   retry.addEventListener("click", () => {
     gameover.classList.toggle("show");
-    instructions.classList.toggle("hidden");
+    instructions.classList.remove("hidden");
   });
 });
 
@@ -682,7 +682,7 @@ class Game {
       this.fade += 0.01;
       this.ctx.fillStyle = "rgba(0,0,0," + this.fade + ")";
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-      setTimeout(() => this.handleGameOver(), 1500);
+      setTimeout(() => this.handleGameOver(), 1400);
     }
   }
 
