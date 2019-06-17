@@ -68,7 +68,7 @@ canvas {
 
 #play-button {
   background: rgb(141, 255, 141);
-  height: 30px;
+  height: 40px;
   width: 50px;
   text-align: center;
   outline: none;
@@ -79,6 +79,41 @@ canvas {
 }
 
 #play-button:hover {
+  background: rgb(102, 202, 102);
+  cursor: pointer;
+}
+
+#game-over {
+  display: none;
+  width: 600px;
+  height: 400px;
+  position: absolute;
+  color: white;
+  background-color: rgba(20, 20, 20, 0.856);
+}
+
+#game-over.show {
+  display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#retry {
+  margin-top: 20px;
+  background: rgb(141, 255, 141);
+  height: 30px;
+  width: 100px;
+  text-align: center;
+  outline: none;
+  border: none;
+  font-size: 16px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+#retry:hover {
   background: rgb(102, 202, 102);
   cursor: pointer;
 }

@@ -104,6 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   var instructions = document.getElementById("game-instructions");
   var play = document.getElementById("play-button");
+  var gameover = document.getElementById("game-over");
   play.addEventListener("click", handleClick);
 
   function handleClick(e) {
@@ -111,6 +112,11 @@ document.addEventListener("DOMContentLoaded", () => {
     newGame.startGame();
     instructions.classList.toggle("hidden");
   }
+  var retry = document.getElementById("retry");
+  retry.addEventListener("click", () => {
+    gameover.classList.toggle("show");
+    instructions.classList.toggle("hidden");
+  });
 });
 
 
@@ -676,7 +682,7 @@ class Game {
       this.fade += 0.01;
       this.ctx.fillStyle = "rgba(0,0,0," + this.fade + ")";
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-      setTimeout(() => this.handleGameOver(), 5000);
+      setTimeout(() => this.handleGameOver(), 1500);
     }
   }
 
@@ -684,6 +690,10 @@ class Game {
     clearInterval(this.gameLoop);
     clearInterval(this.meteorInterval);
     clearInterval(this.difficultyInterval);
+    var gameover = document.getElementById("game-over");
+    gameover.classList.add("show");
+    document.getElementById("score").textContent =
+      "You scored: " + this.score + " points!";
   }
 
   handleSpace() {

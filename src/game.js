@@ -465,7 +465,7 @@ class Game {
       this.fade += 0.01;
       this.ctx.fillStyle = "rgba(0,0,0," + this.fade + ")";
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-      setTimeout(() => this.handleGameOver(), 5000);
+      setTimeout(() => this.handleGameOver(), 1500);
     }
   }
 
@@ -473,6 +473,10 @@ class Game {
     clearInterval(this.gameLoop);
     clearInterval(this.meteorInterval);
     clearInterval(this.difficultyInterval);
+    var gameover = document.getElementById("game-over");
+    gameover.classList.add("show");
+    document.getElementById("score").textContent =
+      "You scored: " + this.score + " points!";
   }
 
   handleSpace() {
