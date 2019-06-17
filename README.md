@@ -16,15 +16,17 @@ Scores are calculated based on survival time, the number of lines created and le
 - Lines will disapear when meteors collide with them
 
 ## MVP
+
 - Canvas renders assets
 - Users can use mouse click and drag
 - Meteors spawn randomly and travel towards the center
+- Meteors and shields are removed when they collide
 - Space bar pauses the game
 - Game over screen displays score and replay button
 
 ## Wireframe
 
-![](https://github.com/elvis-yuan/JankyEarthDefense/blob/master/Wireframe.png)
+![](https://github.com/elvis-yuan/JankyEarthDefense/blob/master/assets/Wireframe.png)
 
 The game will be one page with a rectangular canvas and links to the Github repo and LinkedIn.
 
@@ -38,20 +40,19 @@ The game will be one page with a rectangular canvas and links to the Github repo
 
 ### Day 1:
 
-- [ ] Complete page skeleton and functionality
+- [ ] Complete page skeleton
 - [ ] Complete basic game rendering
 
 ### Day 2:
 
 - [ ] Write logic for mouse actions
 - [ ] Write logic for meteor travel and random generation
-- [ ] Write logic for time keeping and score keeping
+- [ ] Write logic for score keeping
 
 ### Day 3:
 
 - [ ] Implement asset collisions
 - [ ] Make sure game functions correctly
-- [ ] Fix bugs
 
 ### Day 4:
 
