@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   var instructions = document.getElementById("game-instructions");
   var play = document.getElementById("play-button");
+  var gameover = document.getElementById("game-over");
   play.addEventListener("click", handleClick);
 
   function handleClick(e) {
@@ -13,4 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
     newGame.startGame();
     instructions.classList.toggle("hidden");
   }
+  var retry = document.getElementById("retry");
+  retry.addEventListener("click", () => {
+    gameover.classList.toggle("show");
+    instructions.classList.toggle("hidden");
+  });
 });
