@@ -12,11 +12,11 @@ document.addEventListener("DOMContentLoaded", () => {
   function handleClick(e) {
     const newGame = new Game(canvas, ctx);
     newGame.startGame();
-    instructions.classList.toggle("hidden");
+    instructions.classList.add("hidden");
   }
   var retry = document.getElementById("retry");
   retry.addEventListener("click", () => {
     gameover.classList.toggle("show");
-    instructions.classList.toggle("hidden");
+    instructions.classList.remove("hidden");
   });
 });
