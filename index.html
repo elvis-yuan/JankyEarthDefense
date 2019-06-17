@@ -13,15 +13,17 @@
     <div class="game-container">
       <canvas id="myCanvas" height="600" width="960"></canvas>
       <div id="game-instructions" class="">
-        <h1>Janky Earth Defense</h1>
+        <h1 id="title">Janky Earth Defense</h1>
         <div class="tips">
+          <img class="tutorial" src="./assets/tutorial.png" alt="" />
           <p>
             Draw shields (white lines) by clicking and dragging to intercept the
             meteors (red lines) and protect the Earth
           </p>
           <p>
             Every line is limited to a length of 100px and you must wait for
-            your power to regenerate to draw longer lines
+            your power to regenerate to draw longer lines. Shorter Lines earn
+            more points!
           </p>
           <p>
             Every 10,000 points will reward you with another health point
@@ -29,8 +31,12 @@
           <p>
             Try to surive for as long as possible!
           </p>
+          <p>
+            Advanced tip: you can draw shields to intesect the meteors to
+            destroy them instantly!
+          </p>
         </div>
-        <span id="play-button">Play</span>
+        <button id="play-button">Play</button>
       </div>
     </div>
   </body>

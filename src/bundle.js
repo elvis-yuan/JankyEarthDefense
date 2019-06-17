@@ -252,8 +252,7 @@ class Game {
 
     // this.earth = new Earth(this.canvas, this.ctx);
     this.earth = new Image();
-    this.earth.src =
-      "https://ui-ex.com/transparent600_/planet-transparent-5.png";
+    this.earth.src = "./assets/planet-transparent-5.png";
 
     this.handleGameOver = this.handleGameOver.bind(this);
     this.createStars = this.createStars.bind(this);
@@ -694,6 +693,15 @@ class Game {
       clearInterval(this.gameLoop);
       clearInterval(this.meteorInterval);
       clearInterval(this.difficultyInterval);
+      this.ctx.fillStyle = "white";
+      this.ctx.fillText(
+        "Paused",
+        this.canvas.width / 2 - 40,
+        this.canvas.height / 2 - 100
+      );
+      this.tempStartPoint = { x: 0, y: 0 };
+      this.tempEndPoint = { x: 0, y: 0 };
+      this.tempLineLength = 0;
     } else {
       this.difficultyInterval = setInterval(this.increaseDifficulty, 3000);
       this.meteorInterval = setInterval(this.createMeteors, 700);
@@ -702,21 +710,25 @@ class Game {
   }
 
   handleMousedown() {
-    this.mousedown = true;
-    this.tempStartPoint = { x: this.mouseX, y: this.mouseY };
+    if (!this.gamePause) {
+      this.mousedown = true;
+      this.tempStartPoint = { x: this.mouseX, y: this.mouseY };
+    }
   }
 
   handleMouseup() {
-    this.mousedown = false;
-    if (this.shieldArray.length < 50) {
-      if (
-        this.tempStartPoint.x != this.tempEndPoint.x ||
-        this.tempStartPoint.y != this.tempEndPoint.y
-      ) {
-        this.shieldArray.push(
-          new _shield__WEBPACK_IMPORTED_MODULE_1__["default"](this.tempStartPoint, this.tempEndPoint, this.ctx)
-        );
-        this.power.current -= this.tempLineLength;
+    if (!this.gamePause) {
+      this.mousedown = false;
+      if (this.shieldArray.length < 50) {
+        if (
+          this.tempStartPoint.x != this.tempEndPoint.x ||
+          this.tempStartPoint.y != this.tempEndPoint.y
+        ) {
+          this.shieldArray.push(
+            new _shield__WEBPACK_IMPORTED_MODULE_1__["default"](this.tempStartPoint, this.tempEndPoint, this.ctx)
+          );
+          this.power.current -= this.tempLineLength;
+        }
       }
     }
   }
