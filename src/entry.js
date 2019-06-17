@@ -17,6 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
   var retry = document.getElementById("retry");
   retry.addEventListener("click", () => {
     gameover.classList.toggle("show");
-    instructions.classList.remove("hidden");
+    handleClick();
   });
 });

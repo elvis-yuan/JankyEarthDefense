@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
   var retry = document.getElementById("retry");
   retry.addEventListener("click", () => {
     gameover.classList.toggle("show");
-    instructions.classList.remove("hidden");
+    handleClick();
   });
 });
 
@@ -678,11 +678,13 @@ class Game {
 
   checkGameOver() {
     if (this.health <= 0) {
-      this.gameOver = true;
       this.fade += 0.01;
       this.ctx.fillStyle = "rgba(0,0,0," + this.fade + ")";
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-      setTimeout(() => this.handleGameOver(), 1400);
+      if (!this.gameOver) {
+        this.gameOver = true;
+        setTimeout(() => this.handleGameOver(), 1400);
+      }
     }
   }
 
