@@ -272,16 +272,16 @@ class Game {
     canvas.addEventListener("mousedown", this.handleMousedown, false);
     canvas.addEventListener("mouseup", this.handleMouseup, false);
     canvas.addEventListener("mousemove", this.handleMousemove, false);
-    // document.addEventListener("keydown", e => {
-    //   switch (e.code) {
-    //     case "Space":
-    //       e.preventDefault();
-    //       this.handleSpace();
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // });
+    document.addEventListener("keydown", e => {
+      switch (e.code) {
+        case "Space":
+          e.preventDefault();
+          this.handleSpace();
+          break;
+        default:
+          break;
+      }
+    });
   }
 
   //Line intersection math source: http://www.kevlindev.com/gui/math/intersection/Intersection.js
