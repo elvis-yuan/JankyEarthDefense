@@ -1,5 +1,7 @@
 # JankyEarthDefense
+
 [Live](https://elvis-yuan.github.io/JankyEarthDefense/)
+
 ## Overview
 
 Janky Earth Defense is a survival game where users draw lines to defend Earth from meteors.
@@ -26,7 +28,7 @@ Scores are calculated based on survival time, the number of lines created and le
 
 ## Wireframe
 
-![](https://github.com/elvis-yuan/JankyEarthDefense/blob/master/assets/Wireframe.png)
+![](https://github.com/elvis-yuan/JankyEarthDefense/blob/master/assets/tutorial.png)
 
 The game will be one page with a rectangular canvas and links to the Github repo and LinkedIn.
 
